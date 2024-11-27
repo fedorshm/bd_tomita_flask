@@ -1,0 +1,24 @@
+-- увидеть че в каждой табле
+select * from "Ngram"
+select * from "Lem"
+select * from "Text"
+select * from "Phrases"
+
+
+-- чтоб индексы шли сначала, когда очистили бд, а то будут начинаться там, где заканчивались до этого
+ALTER SEQUENCE "Text_IDText_seq" RESTART WITH 1;
+
+ALTER SEQUENCE "Ngram_IDWord_seq" RESTART WITH 1;
+
+ALTER SEQUENCE "Lem_IDLem_seq" RESTART WITH 1;
+
+--удалить все из базы целиком, из каждой таблы
+SET session_replication_role = 'replica';
+
+DELETE FROM "Lem";
+DELETE FROM "Ngram";
+DELETE FROM "Text";
+DELETE FROM "Phrases";
+
+SET session_replication_role = 'origin';
+
