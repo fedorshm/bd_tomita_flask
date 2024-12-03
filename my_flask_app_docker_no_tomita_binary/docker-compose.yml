@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:toor@db:5432/tomitabdd
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: tomitabdd
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: toor
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+
+volumes:
+  db_data:
+

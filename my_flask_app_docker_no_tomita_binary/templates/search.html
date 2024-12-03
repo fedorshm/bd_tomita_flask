@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск по БД</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .spacer {
+            margin-top: 20px;
+        }
+        .kwic {
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Проект БД</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Поиск</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mt-5">Поиск по БД</h1>
+        <form method="post" class="spacer">
+            <div class="form-row">
+                <div class="col">
+                    <input type="text" class="form-control" name="search_text" placeholder="Поиск по тексту">
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" name="pos_tag" placeholder="Поиск по тегам">
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" name="lem" placeholder="Поиск по лемме">
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Поиск</button>
+                </div>
+            </div>
+        </form>
+
+        {% if request.form.get('pos_tag') and results.words %}
+            <h2 class="spacer">Слова с указанным тегом ЧР:</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Слово</th>
+                        <th>Тег</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for word, tag in results.words %}
+                        <tr>
+                            <td>{{ word }}</td>
+                            <td>{{ tag }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        {% if request.form.get('pos_tag') and results.phrases %}
+            <h2 class="spacer">Фразы с указанным тегом ЧР:</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Фраза</th>
+                        <th>Текст</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for phrase, text in results.phrases %}
+                        <tr>
+                            <td>{{ phrase }}</td>
+                            <td>{{ text }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        {% if request.form.get('search_text') and results.texts %}
+            <h2 class="spacer">Тексты с искомым словом:</h2>
+            <div>
+                <button class="btn btn-secondary" onclick="toggleView('table')">Таблица</button>
+                <button class="btn btn-secondary" onclick="toggleView('kwic')">KWIC</button>
+
+                <div id="table-view" style="display:block;">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Текст</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for text in results.texts %}
+                                <tr>
+                                    <td>{{ text[0] }}</td>
+                                    <td>{{ text[1] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="kwic-view" style="display:none;">
+                    {% for context in results.contexts %}
+                        <p>{{ context[1] | replace(context[0], '<span class="kwic">' + context[0] + '</span>') | safe }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if request.form.get('lem') and results.texts %}
+            <h2 class="spacer">Фразы и тексты с искомой леммой:</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Фраза</th>
+                        <th>Текст</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for text in results.texts %}
+                        <tr>
+                            <td>{{ text[0] }}</td>
+                            <td>{{ text[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <button class="btn btn-link spacer" onclick="window.location.href='/'">Вернуться на главную</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function toggleView(view) {
+            document.getElementById('table-view').style.display = view === 'table' ? 'block' : 'none';
+            document.getElementById('kwic-view').style.display = view === 'kwic' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>

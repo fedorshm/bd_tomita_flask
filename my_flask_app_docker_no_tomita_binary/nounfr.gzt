@@ -1,0 +1,7 @@
+encoding "utf8";
+import "base.proto";     
+import "articles_base.proto";
+TAuxDicArticle "СущПрил"
+{
+    key = { "tomita:nounfr.cxx" type=CUSTOM }
+}
