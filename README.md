@@ -26,4 +26,4 @@ pip install -r requirements.txt
 ```
 flask run
 ```
-**Инструкция по запуску сервиса через докер со всеми файлами в папке my_flask_app_docker_no_tomita_binary**
+# Инструкция по запуску сервиса через докер со всеми файлами в папке my_flask_app_docker_no_tomita_binary
